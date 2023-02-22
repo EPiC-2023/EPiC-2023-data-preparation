@@ -1,0 +1,90 @@
+{
+    "scenario_3": {
+        "0": {
+            "train": [
+                "amusing-1",
+                "amusing-2",
+                "boring-1",
+                "boring-2",
+                "relaxing-1",
+                "relaxing-2"
+            ],
+            "test": [
+                "scary-1",
+                "scary-2"
+            ]
+        },
+        "1": {
+            "train": [
+                "scary-1",
+                "scary-2",
+                "boring-1",
+                "boring-2",
+                "relaxing-1",
+                "relaxing-2"
+            ],
+            "test": [
+                "amusing-1",
+                "amusing-2"
+            ]
+        },
+        "2": {
+            "train": [
+                "amusing-1",
+                "amusing-2",
+                "relaxing-1",
+                "relaxing-2",
+                "scary-1",
+                "scary-2"
+            ],
+            "test": [
+                "boring-1",
+                "boring-2"
+            ]
+        },
+        "3": {
+            "train": [
+                "amusing-1",
+                "amusing-2",
+                "boring-1",
+                "boring-2",
+                "scary-1",
+                "scary-2"
+            ],
+            "test": [
+                "relaxing-1",
+                "relaxing-2"
+            ]
+        }
+    },
+    "scenario_4": {
+        "0": {
+            "train": [
+                "amusing-1",
+                "boring-1",
+                "relaxing-1",
+                "scary-1"
+            ],
+            "test": [
+                "amusing-2",
+                "boring-2",
+                "relaxing-2",
+                "scary-2"
+            ]
+        },
+        "1": {
+            "train": [
+                "amusing-2",
+                "boring-2",
+                "relaxing-2",
+                "scary-2"
+            ],
+            "test": [
+                "amusing-1",
+                "boring-1",
+                "relaxing-1",
+                "scary-1"
+            ]
+        }
+    }
+}

@@ -1,0 +1,42 @@
+{
+    "1": {
+        "label": "amusing-1",
+        "valence": "med/high",
+        "arousal": "med/high"
+    },
+    "2": {
+        "label": "amusing-2",
+        "valence": "med/high",
+        "arousal": "med/high"
+    },
+    "3": {
+        "label": "boring-1",
+        "valence": "low",
+        "arousal": "low"
+    },
+    "4": {
+        "label": "boring-2",
+        "valence": "low",
+        "arousal": "low"
+    },
+    "5": {
+        "label": "relaxing-1",
+        "valence": "med/high",
+        "arousal": "low"
+    },
+    "6": {
+        "label": "relaxing-2",
+        "valence": "med/high",
+        "arousal": "low"
+    },
+    "7": {
+        "label": "scary-1",
+        "valence": "low",
+        "arousal": "high"
+    },
+    "8": {
+        "label": "scary-2",
+        "valence": "low",
+        "arousal": "high"
+    }
+}
