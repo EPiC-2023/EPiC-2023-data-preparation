@@ -195,7 +195,7 @@ class CaseDatasetProcessor:
         # compute split times - time moments where data is split into different segments
         annotations_step = int(annotations_step * scale_time)
         train_start_time = annotations_start_time + int(
-            times_dict["beginning_train_separation"] * scale_time
+            times_dict["beginning_train_separation_time"] * scale_time
         )
         train_end_time = train_start_time + int(times_dict["train_time"] * scale_time)
         test_start_time = train_end_time + int(

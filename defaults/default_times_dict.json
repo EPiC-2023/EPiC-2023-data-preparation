@@ -1,5 +1,5 @@
 {
-    "beginning_train_separation": 0,
+    "beginning_train_separation_time": 0,
     "train_time": 0,
     "train_test_separation_time": 0,
     "test_ignore_time_front": 0,

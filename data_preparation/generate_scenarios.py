@@ -32,6 +32,13 @@ def _print_info(scenario, times_dict):
 
 
 def generate_scenario_1(config_dict, reader, processor, out_data_dir):
+    """Generate scenario 1.
+    Args:
+        config_dict (dict): dictionary with configuration settings
+        reader (CaseDatasetReader): reader object that allows to read and iterate the data
+        processor (CaseDatasetProcessor): processor object that allows extracting data and saving it
+        out_data_dir (str): output directory 
+    """
     # set scenario
     scenario = 1
     # setup output directories
@@ -104,6 +111,16 @@ def generate_scenario_234(
     kfold_random_seed=None,
     save_physiology=True,
 ):
+    """Generate scenario 2, 3, or 4.
+    Args:
+        config_dict (dict): dictionary with configuration settings
+        reader (CaseDatasetReader): reader object that allows to read and iterate the data
+        processor (CaseDatasetProcessor): processor object that allows extracting data and saving it
+        out_data_dir (str): output directory 
+        scenario: (int): scenario to generate
+        kfold_random_seed (int): random seed to use in scenario 2 to generate data folds
+        save_physiology (bool): whether to save physiology or not
+    """
     def _prepare_scenario_2_folds(scenario_settings):
         # prepare folds for scenario 2 - based on participants
         train_tuple = tuple("train" for _ in reader.videos)
@@ -170,7 +187,7 @@ def generate_scenario_234(
     # prepare dictionary with times for training
     train_times_dict = {
         **default_times_dict,
-        "beginning_train_separation": scenario_settings["beginning_train_separation"],
+        "beginning_train_separation_time": scenario_settings["beginning_train_separation_time"],
         "train_time": scenario_settings["train_time"],
         "train_test_separation_time": scenario_settings["train_test_separation_time"],
     }
@@ -216,11 +233,8 @@ def generate_scenario_234(
             # for each fild in subject folds
             for fold_idx, videos_buckets in enumerate(subject_folds):
                 set_type = videos_buckets[video - 1]
-                # if set_type == "test":
-                    # if processor.memory_dict[subject_id][video][set_type]:
-                    #     continue
-                    # for now we have whole subjects, but it can be easily modified using times_dict and compute_time_index method.
-                    # Then, it would be best to save test physiology separately
+                # for now we have whole subjects, but it can be easily modified using times_dict and compute_time_index method.
+                # Then, it would be best to save test physiology separately
                 times_dict = test_times_dict if set_type == 'test' else train_times_dict
                 time_intervals = processor.compute_intervals(
                     video_annotations["time"].iloc[0],
@@ -250,30 +264,3 @@ def generate_scenario_234(
                     reset_time=True,
                     reset_time_amount=physiology["time"].iloc[0],
                 )
-                    # got to next fold
-                #     continue
-                # # get train times and timestamps for supplied intervals
-                # time_intervals = processor.compute_intervals(
-                #     video_annotations["time"].iloc[0],
-                #     video_annotations["time"].iloc[-1],
-                #     train_times_dict,
-                #     allow_common_train_test_sample=True,
-                # )
-                # # extract data based on the provided intervals
-                # (
-                #     train_annotations,
-                #     train_physiology,
-                # ) = processor.extract_data_for_intervals(
-                #     video_annotations, video_physiology, time_intervals, set_type
-                # )
-                # # save data
-                # processor.save_data(
-                #     annotations=train_annotations,
-                #     out_annotations_dir=out_annotations_dir,
-                #     physiology=train_physiology if save_physiology else None,
-                #     out_physiology_dir=out_physiology_dir if save_physiology else None,
-                #     subject_id=subject_id,
-                #     video=video,
-                #     set_type="train",
-                #     fold_idx=fold_idx,
-                # )

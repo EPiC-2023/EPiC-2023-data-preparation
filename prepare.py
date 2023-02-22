@@ -25,6 +25,7 @@ signals_to_include = config_dict["settings"]["signals_to_include"]
 reader = CaseDatasetReader(source_annotations_dir, source_physiology_dir)
 processor = CaseDatasetProcessor(reader)
 
+random_seed = int(config_dict["settings"]['random_seed'])
 
 if __name__ == "__main__":
     if 1 in scenarios_to_prepare:
@@ -38,6 +39,7 @@ if __name__ == "__main__":
             processor,
             out_data_dir,
             scenario=2,
+            kfold_random_seed=random_seed
         )
     if 3 in scenarios_to_prepare:
         # scenario 3
