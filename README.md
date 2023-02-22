@@ -100,5 +100,5 @@ data directory
 
 The structure is similar for all files, i.e. `{train, test} / {annotations, physiologicals} / <data files>`. Scenarios 2, 3, and 4 all have an additional level with number of fold, so paths look like `fold_<num> / {train, test} / {annotations, physiologicals} / <data files>`
 
-## Resources
-[1]
+## Literature
+[1] Sharma, K., Castellini, C., van den Broek, E.L. et al. A dataset of continuous affect annotations and physiological signals for emotion analysis. Sci Data 6, 196 (2019). https://doi.org/10.1038/s41597-019-0209-0
