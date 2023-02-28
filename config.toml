@@ -4,7 +4,7 @@ out_data_dir = "./data/"
 
 
 [settings]
-scenarios_to_generate = [1,2,3,4]
+scenarios_to_generate = [3,4]
 signals_to_include = ["ecg", "bvp", "gsr", "rsp", "skt", "emg_zygo", "emg_coru", "emg_trap"]
 random_seed = 2022
 time_scale = 1000
@@ -31,18 +31,18 @@ kfold_num_splits = 5
 [settings.scenario_3_settings]
 beginning_train_separation_time = 0
 train_time = 60
-train_test_separation_time = 0
+train_test_separation_time = -1
 test_ignore_time_front = 10
-test_time = -1
+test_time = 20
 test_ignore_time_end = 10
 scenarios_folds_path = "./defaults/scenarios_folds.json"
 
 [settings.scenario_4_settings]
 beginning_train_separation_time = 0
 train_time = 60
-train_test_separation_time = 0
+train_test_separation_time = -1
 test_ignore_time_front = 10
-test_time = -1
+test_time = 20
 test_ignore_time_end = 10
 scenarios_folds_path = "./defaults/scenarios_folds.json"
 
