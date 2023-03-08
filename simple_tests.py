@@ -19,10 +19,10 @@ def compute_file_hash(file_path):
 def names_differences(fold_dir):
     "Check similarities and differences between names in train and test sets"
     train_annotations_names = set(os.listdir(os.path.join(fold_dir, 'train', 'annotations')))
-    train_physiological_names = set(os.listdir(os.path.join(fold_dir, 'train', 'physiological')))
+    train_physiology_names = set(os.listdir(os.path.join(fold_dir, 'train', 'physiology')))
     test_annotations_names = set(os.listdir(os.path.join(fold_dir, 'test', 'annotations')))
-    test_physiological_names = set(os.listdir(os.path.join(fold_dir, 'test', 'physiological')))
-    return train_annotations_names.isdisjoint(test_annotations_names), train_annotations_names == test_annotations_names, ((train_annotations_names == train_physiological_names), (test_annotations_names == test_physiological_names))
+    test_physiology_names = set(os.listdir(os.path.join(fold_dir, 'test', 'physiology')))
+    return train_annotations_names.isdisjoint(test_annotations_names), train_annotations_names == test_annotations_names, ((train_annotations_names == train_physiology_names), (test_annotations_names == test_physiology_names))
 
 
 def dir_hash_train_test_differences(fold_dir, data_type):
@@ -73,7 +73,7 @@ def scenario_folds_test_sets_hash_differences(scenario_dir):
     # for each fold directory
     for fold_dir in os.listdir(os.path.join(scenario_dir)):
         # for each data type
-        for data_type in 'annotations', 'physiological':
+        for data_type in 'annotations', 'physiology':
             test_path = os.path.join(scenario_dir, fold_dir, 'test', data_type)
             f_paths = [os.path.join(test_path, f_name) for f_name in os.listdir(test_path)]
             for f_path in f_paths:
@@ -103,7 +103,7 @@ def examine_data_files(path):
         # check if annotations always have corresponding physiology
         assert all(annot_df['time'] >= physio_df['time'].iloc[0]) and all(annot_df['time'] <= physio_df['time'].iloc[-1]), "Annotations corrupt index"
     annotations_dir = os.path.join(path, 'annotations')
-    physiology_dir = os.path.join(path, 'physiological')
+    physiology_dir = os.path.join(path, 'physiology')
     annotations_files = sorted(os.listdir(annotations_dir))
     for f_name in annotations_files:
         # load data
@@ -123,7 +123,7 @@ def test_scenario_1(scenario_1_dir):
     if not all((is_traintest_same, is_train_same, is_test_same)):
         return False
     are_annotations_disjoint, are_annotations_same, _ = dir_hash_train_test_differences(scenario_1_dir, 'annotations')
-    is_physiology_disjoint, is_physiology_same, _ = dir_hash_train_test_differences(scenario_1_dir, 'physiological')
+    is_physiology_disjoint, is_physiology_same, _ = dir_hash_train_test_differences(scenario_1_dir, 'physiology')
     # ok if all hashes are different in train and test set
     # else return false
     if any((are_annotations_same, is_physiology_same)) or not all((are_annotations_disjoint, is_physiology_disjoint)):
@@ -149,7 +149,7 @@ def test_scenarios_234(scenario_dir):
         if not (is_disjoint and (not is_traintest_same) and all((is_train_same, is_test_same))):
             return False
         are_annotations_disjoint, are_annotations_same, _ = dir_hash_train_test_differences(fold_path, 'annotations')
-        is_physiology_disjoint, is_physiology_same, _ = dir_hash_train_test_differences(fold_path, 'physiological')
+        is_physiology_disjoint, is_physiology_same, _ = dir_hash_train_test_differences(fold_path, 'physiology')
         # ok if all hashes are different in train and test set
         # else return false
         if any((are_annotations_same, is_physiology_same)) or not all((are_annotations_disjoint, is_physiology_disjoint)):

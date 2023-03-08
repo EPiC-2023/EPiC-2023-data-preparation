@@ -21,43 +21,55 @@ out_data_dir = config_dict["env_paths"]["out_data_dir"]
 scenarios_to_prepare = set(config_dict["settings"]["scenarios_to_generate"])
 signals_to_include = config_dict["settings"]["signals_to_include"]
 
+save_test_annotations = config_dict["settings"]["save_test_annotations"]
+
 # make instances of objects for loading and processing data
 reader = CaseDatasetReader(source_annotations_dir, source_physiology_dir)
 processor = CaseDatasetProcessor(reader)
 
-random_seed = int(config_dict["settings"]['random_seed'])
+default_random_seed = int(config_dict["settings"]['random_seed'])
 
 if __name__ == "__main__":
     if 1 in scenarios_to_prepare:
         # scenario 1
-        generate_scenario_1(config_dict, reader, processor, out_data_dir)
+        generate_scenario_1(config_dict, reader, processor, out_data_dir, save_test_annotations)
+        processor.add_mappings_to_memory(1)
     if 2 in scenarios_to_prepare:
         # scenario 2
+        processor.set_videos_subjects_mapping(default_random_seed + 2)
         generate_scenario_234(
             config_dict,
             reader,
             processor,
             out_data_dir,
             scenario=2,
-            kfold_random_seed=random_seed
+            kfold_random_seed=default_random_seed,
+            save_test_annotations=save_test_annotations
         )
+        processor.add_mappings_to_memory(2)
     if 3 in scenarios_to_prepare:
         # scenario 3
+        processor.set_videos_subjects_mapping(default_random_seed + 3)
         generate_scenario_234(
             config_dict,
             reader,
             processor,
             out_data_dir,
-            scenario=3
+            scenario=3,
+            save_test_annotations=save_test_annotations
         )
+        processor.add_mappings_to_memory(3)
     if 4 in scenarios_to_prepare:
         # scenario 4
+        processor.set_videos_subjects_mapping(default_random_seed + 4)
         generate_scenario_234(
             config_dict,
             reader,
             processor,
             out_data_dir,
-            scenario=4
+            scenario=4,
+            save_test_annotations=save_test_annotations
         )
+        processor.add_mappings_to_memory(4)
     # save metadata
-    processor.save_metadata(out_data_dir)
+    processor.save_metadata(out_data_dir, save_mapping_memory=True)

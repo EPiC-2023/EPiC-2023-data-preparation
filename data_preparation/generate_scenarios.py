@@ -31,7 +31,7 @@ def _print_info(scenario, times_dict):
     pprint(times_dict)
 
 
-def generate_scenario_1(config_dict, reader, processor, out_data_dir):
+def generate_scenario_1(config_dict, reader, processor, out_data_dir, save_test_annotations=True):
     """Generate scenario 1.
     Args:
         config_dict (dict): dictionary with configuration settings
@@ -90,8 +90,8 @@ def generate_scenario_1(config_dict, reader, processor, out_data_dir):
                 video_annotations, video_physiology, time_intervals, "test"
             )
             processor.save_data(
-                annotations=test_annotations,
-                out_annotations_dir=out_annotations_dir,
+                annotations=test_annotations if save_test_annotations else None,
+                out_annotations_dir=out_annotations_dir if save_test_annotations else None,
                 physiology=test_physiology,
                 out_physiology_dir=out_physiology_dir,
                 subject_id=subject_id,
@@ -110,6 +110,7 @@ def generate_scenario_234(
     scenario,
     kfold_random_seed=None,
     save_physiology=True,
+    save_test_annotations=True,
 ):
     """Generate scenario 2, 3, or 4.
     Args:
@@ -119,7 +120,8 @@ def generate_scenario_234(
         out_data_dir (str): output directory 
         scenario: (int): scenario to generate
         kfold_random_seed (int): random seed to use in scenario 2 to generate data folds
-        save_physiology (bool): whether to save physiology or not
+        save_physiology (bool): whether to save annotations or not
+        save_test_annotations (bool): whether to save annotations for the test set or not
     """
     def _prepare_scenario_2_folds(scenario_settings):
         # prepare folds for scenario 2 - based on participants
@@ -249,10 +251,12 @@ def generate_scenario_234(
                 ) = processor.extract_data_for_intervals(
                     video_annotations, video_physiology, time_intervals, set_type
                 )
+                # bool for deciding whether to save annotations - always for train set, for test set only if save_test_annotations is True
+                save_annotations_bool = not set_type=='test' or save_test_annotations
                 # save data
                 processor.save_data(
-                    annotations=annotations,
-                    out_annotations_dir=out_annotations_dir,
+                    annotations=annotations if save_annotations_bool else None,
+                    out_annotations_dir=out_annotations_dir if save_annotations_bool else None,
                     physiology=physiology if save_physiology else None,
                     out_physiology_dir=out_physiology_dir
                     if save_physiology

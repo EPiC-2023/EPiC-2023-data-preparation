@@ -1,48 +1,50 @@
 [env_paths]
 source_data_dir = "/home/bartek/data/case_interpolated/"
-out_data_dir = "./data/"
+out_data_dir = "./data_notest/"
 
 
 [settings]
-scenarios_to_generate = [3,4]
+scenarios_to_generate = [1,2,3,4]
+save_test_annotations = false
 signals_to_include = ["ecg", "bvp", "gsr", "rsp", "skt", "emg_zygo", "emg_coru", "emg_trap"]
 random_seed = 2022
 time_scale = 1000
+num_significant_digits = 3
 stimuli_labels_path = "./defaults/stimuli_labels.json"
 default_times_dict_path = "./defaults/default_times_dict.json"
 
 [settings.scenario_1_settings]
 beginning_train_separation_time = 0
-train_time = 60
-train_test_separation_time = -1
+train_time = -1
+train_test_separation_time = 20
 test_ignore_time_front = 10
-test_time = 10
+test_time = 30
 test_ignore_time_end = 10
 
 [settings.scenario_2_settings]
 beginning_train_separation_time = 0
-train_time = 60
-train_test_separation_time = -1
+train_time = -1
+train_test_separation_time = 68.6
 test_ignore_time_front = 10
-test_time = 20
+test_time = 30
 test_ignore_time_end = 10
 kfold_num_splits = 5
 
 [settings.scenario_3_settings]
 beginning_train_separation_time = 0
-train_time = 60
-train_test_separation_time = -1
+train_time = -1
+train_test_separation_time = 67
 test_ignore_time_front = 10
-test_time = 20
+test_time = 30
 test_ignore_time_end = 10
 scenarios_folds_path = "./defaults/scenarios_folds.json"
 
 [settings.scenario_4_settings]
 beginning_train_separation_time = 0
-train_time = 60
-train_test_separation_time = -1
+train_time = -1
+train_test_separation_time = 65
 test_ignore_time_front = 10
-test_time = 20
+test_time = 30
 test_ignore_time_end = 10
 scenarios_folds_path = "./defaults/scenarios_folds.json"
 

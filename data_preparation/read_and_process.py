@@ -18,6 +18,7 @@ with open("config.toml", "r") as fp:
 
 DEFAULT_RAND_SEED = config_dict["settings"]["random_seed"]
 STIMULI_LABELS_MAP_PATH = config_dict["settings"]["stimuli_labels_path"]
+NUM_SIGNIFICANT_DIGITS = config_dict["settings"]["num_significant_digits"]
 
 with open(STIMULI_LABELS_MAP_PATH, "r") as fp:
     STIMULI_LABELS_MAP = json.load(fp)
@@ -93,7 +94,7 @@ class CaseDatasetReader:
 
 class CaseDatasetProcessor:
     def __init__(
-        self, dataset_reader, replace_videos=True, replace_subjects=True,
+        self, dataset_reader, replace_videos=True, replace_subjects=True, shuffle_replace_dicts=True
     ) -> None:
         "Initialize dataset processor from a reader"
         # videos array
@@ -105,14 +106,13 @@ class CaseDatasetProcessor:
         # whether to replace subjects
         self.replace_subjects = replace_subjects
         # mapping video ids -> new video ids. Anonymization
-        self.videos_mapping = self.generate_old_to_new_map(
-            original_ids=self.videos, new_ids=None if replace_videos else self.videos
-        )
+        self.videos_mapping = None
         # mapping subject ids -> new subject ids. Anonymization
-        self.subjects_mapping = self.generate_old_to_new_map(
-            original_ids=self.subjects,
-            new_ids=None if replace_subjects else self.subjects,
-        )
+        self.subjects_mapping = None
+        # make mapping memory
+        self.mapping_memory = dict()
+        # set self.videos_mapping and self.subjects_mapping dictionaries
+        self.set_videos_subjects_mapping()
         # state dict for storing already processed data - speeds up computations
         self.memory_dict = self._make_memory_dict()
 
@@ -139,6 +139,20 @@ class CaseDatasetProcessor:
         # make mapping and return
         old_new_mapping = {int(old_i): int(new_i) for old_i, new_i in zip(original_ids, new_ids)}
         return old_new_mapping
+    
+    def set_videos_subjects_mapping(self, random_seed=DEFAULT_RAND_SEED):
+        # mapping video ids -> new video ids. Anonymization
+        self.videos_mapping = self.generate_old_to_new_map(
+            original_ids=self.videos, new_ids=None if self.replace_videos else self.videos, random_seed=random_seed
+        )
+        # mapping subject ids -> new subject ids. Anonymization
+        self.subjects_mapping = self.generate_old_to_new_map(
+            original_ids=self.subjects,
+            new_ids=None if self.replace_subjects else self.subjects, random_seed=random_seed
+        )
+
+    def add_mappings_to_memory(self, scenario):
+        self.mapping_memory.setdefault(f'scenario_{scenario}', {'subjects': self.subjects_mapping, 'videos': self.videos_mapping})
 
     def compute_intervals(
         self,
@@ -212,7 +226,7 @@ class CaseDatasetProcessor:
         )
         # make sure that train and test data do not have a common part if not specified
         assert (
-            train_end_time != test_start_time
+            train_end_time < test_start_time
         ) or allow_common_train_test_sample, "Train end time == test_start_time"
         # make a dictionary with computed times
         ret_times_dict = {
@@ -229,15 +243,15 @@ class CaseDatasetProcessor:
         ), "Required time too large. Time interval is too short to extract wantet time segments."
         return ret_times_dict
 
-    @staticmethod
-    def compute_time_index(wanted_time, time_array, scale_time=1_000):
-        wanted_time = wanted_time * scale_time
-        if wanted_time < 0:
-            wanted_time = time_array.iloc[-1] + wanted_time
-        assert (
-            wanted_time >= 0
-        ), "Not enough time in supplied data. Check provided arguments."
-        return time_array[time_array >= wanted_time].index[0]
+    # @staticmethod
+    # def compute_time_index(wanted_time, time_array, scale_time=1_000):
+    #     wanted_time = wanted_time * scale_time
+    #     if wanted_time < 0:
+    #         wanted_time = time_array.iloc[-1] + wanted_time
+    #     assert (
+    #         wanted_time >= 0
+    #     ), "Not enough time in supplied data. Check provided arguments."
+    #     return time_array[time_array >= wanted_time].index[0]
 
     @staticmethod
     def process_data(
@@ -355,7 +369,7 @@ class CaseDatasetProcessor:
         def _to_csv(data, out_dir, file_name):
             "Save data"
             os.makedirs(out_dir, exist_ok=True)
-            data.to_csv(os.path.join(out_dir, file_name), index=False)
+            data.to_csv(os.path.join(out_dir, file_name), index=False, float_format=f"%.{NUM_SIGNIFICANT_DIGITS}f")
 
         # make copy to prevent ambiguity
         data = data.copy()
@@ -442,7 +456,7 @@ class CaseDatasetProcessor:
             self._save_data(
                 data=physiology,
                 out_dir=out_physiology_dir,
-                data_type='physiological',
+                data_type='physiology',
                 subject_id=subject_id,
                 video=video,
                 set_type=set_type,
@@ -453,9 +467,13 @@ class CaseDatasetProcessor:
                 reset_time_amount=reset_time_amount,
             )
 
-    def save_metadata(self, out_dir):
+    def save_metadata(self, out_dir, save_mapping_memory=True):
         "Method for saving subjects and videos maps"
         # save additional info
+        if save_mapping_memory:
+            with open(os.path.join(out_dir, "old_new_ids_map.json"), "w") as fp:
+                json.dump(self.mapping_memory, fp, sort_keys=True)
+            return
         if self.replace_videos:
             with open(os.path.join(out_dir, "old_new_videos_map.json"), "w") as fp:
                 json.dump(self.videos_mapping, fp, sort_keys=True)

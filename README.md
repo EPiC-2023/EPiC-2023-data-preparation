@@ -14,8 +14,10 @@ File config.toml contains settings, such as:
 - `out_data_dir` - output directory for generated files
 - `scenarios_to_generate` - list of scenarios to generate in the run of `prepare.py`
 - `signals_to_include` - list of signals to inlcude in the generated data
+- `save_test_annotations` - whether to save annotations for the test set
 - `random_seed` - random seed used in random processes, such as shuffling participants or video ids, or generating random folds
 - `time_scale` - number of time-units per second (if time in the dataset is reported in miliseconds, then `time_scale` should be 1000, because 1s = 1000ms)
+- `num_significant_digits` - number of significant digits (digits after decimal point) in created .csv files (both annotations and physiology)
 - `stimuli_labels_path` - path to the file with names of stimuli
 - `default_times_dict_path` - path to the file with default parameters for time dictionary
 - `all_available_signals` - all signals available in the original dataset (not used in code, just a note in case someone edited `signals_to_include` and wanted to quickly go back)
@@ -77,7 +79,7 @@ data directory
 |             +----  annotations
 |                    +---- sub_1_vid_1.csv
 |                    +---- ...
-|             +----  physiological
+|             +----  physiology
 |                    +---- sub_1_vid_1.csv
 |                    +---- ...
 |      +----  test
@@ -88,7 +90,7 @@ data directory
 |                    +----  annotations
 |                           +---- sub_1_vid_1.csv
 |                           +---- ...
-|                    +----  physiological
+|                    +----  physiology
 |                           +---- sub_1_vid_1.csv
 |                           +---- ...
 |              +----  test
@@ -98,7 +100,7 @@ data directory
 
 ```
 
-The structure is similar for all files, i.e. `{train, test} / {annotations, physiologicals} / <data files>`. Scenarios 2, 3, and 4 all have an additional level with number of fold, so paths look like `fold_<num> / {train, test} / {annotations, physiologicals} / <data files>`
+The structure is similar for all files, i.e. `{train, test} / {annotations, physiology} / <data files>`. Scenarios 2, 3, and 4 all have an additional level with number of fold, so paths look like `fold_<num> / {train, test} / {annotations, physiology} / <data files>`
 
 ## Literature
 [1] Sharma, K., Castellini, C., van den Broek, E.L. et al. A dataset of continuous affect annotations and physiological signals for emotion analysis. Sci Data 6, 196 (2019). https://doi.org/10.1038/s41597-019-0209-0
