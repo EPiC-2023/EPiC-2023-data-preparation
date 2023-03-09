@@ -361,15 +361,18 @@ class CaseDatasetProcessor:
         save_video_num=False,
         reset_time=True,
         reset_time_amount=None,
+        make_time_index=True,
+        replace_values_bool=False, 
+        replacing_value=-1
     ):
         """
         Method for saving processed data
         """
 
-        def _to_csv(data, out_dir, file_name):
+        def _to_csv(data, out_dir, file_name, save_index=True):
             "Save data"
             os.makedirs(out_dir, exist_ok=True)
-            data.to_csv(os.path.join(out_dir, file_name), index=False, float_format=f"%.{NUM_SIGNIFICANT_DIGITS}f")
+            data.to_csv(os.path.join(out_dir, file_name), index=save_index, float_format=f"%.{NUM_SIGNIFICANT_DIGITS}f")
 
         # make copy to prevent ambiguity
         data = data.copy()
@@ -389,6 +392,12 @@ class CaseDatasetProcessor:
                 if reset_time_amount is not None
                 else data["time"].iloc[0]
             )
+        # set time column as index
+        if make_time_index:
+            data.set_index("time", inplace=True)
+        # replace all values in the dataframe
+        if replace_values_bool:
+            data.loc[:, :] = replacing_value
         # generate a name for the data file
         out_file_name = (
             out_file_name or f"sub_{save_subject_id}_vid_{save_video_id}.csv"
@@ -429,6 +438,7 @@ class CaseDatasetProcessor:
         save_video_num=False,
         reset_time=True,
         reset_time_amount=None,
+        replace_annotations=False
     ):
         "Method managing saving data for experiments"
         # generate file name
@@ -450,6 +460,7 @@ class CaseDatasetProcessor:
                 save_video_num=save_video_num,
                 reset_time=reset_time,
                 reset_time_amount=reset_time_amount,
+                replace_values_bool=replace_annotations
             )
         # save physiology if provided
         if physiology is not None:

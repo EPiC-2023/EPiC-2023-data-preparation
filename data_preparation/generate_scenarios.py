@@ -31,7 +31,7 @@ def _print_info(scenario, times_dict):
     pprint(times_dict)
 
 
-def generate_scenario_1(config_dict, reader, processor, out_data_dir, save_test_annotations=True):
+def generate_scenario_1(config_dict, reader, processor, out_data_dir, replace_test_annotations=False):
     """Generate scenario 1.
     Args:
         config_dict (dict): dictionary with configuration settings
@@ -90,8 +90,8 @@ def generate_scenario_1(config_dict, reader, processor, out_data_dir, save_test_
                 video_annotations, video_physiology, time_intervals, "test"
             )
             processor.save_data(
-                annotations=test_annotations if save_test_annotations else None,
-                out_annotations_dir=out_annotations_dir if save_test_annotations else None,
+                annotations=test_annotations,
+                out_annotations_dir=out_annotations_dir,
                 physiology=test_physiology,
                 out_physiology_dir=out_physiology_dir,
                 subject_id=subject_id,
@@ -99,6 +99,7 @@ def generate_scenario_1(config_dict, reader, processor, out_data_dir, save_test_
                 set_type="test",
                 reset_time=True,
                 reset_time_amount=test_physiology["time"].iloc[0],
+                replace_annotations = replace_test_annotations
             )
 
 
@@ -110,7 +111,7 @@ def generate_scenario_234(
     scenario,
     kfold_random_seed=None,
     save_physiology=True,
-    save_test_annotations=True,
+    replace_test_annotations=False,
 ):
     """Generate scenario 2, 3, or 4.
     Args:
@@ -252,11 +253,11 @@ def generate_scenario_234(
                     video_annotations, video_physiology, time_intervals, set_type
                 )
                 # bool for deciding whether to save annotations - always for train set, for test set only if save_test_annotations is True
-                save_annotations_bool = not set_type=='test' or save_test_annotations
+                replace_annotations_bool = set_type=='test' and replace_test_annotations
                 # save data
                 processor.save_data(
-                    annotations=annotations if save_annotations_bool else None,
-                    out_annotations_dir=out_annotations_dir if save_annotations_bool else None,
+                    annotations=annotations,
+                    out_annotations_dir=out_annotations_dir,
                     physiology=physiology if save_physiology else None,
                     out_physiology_dir=out_physiology_dir
                     if save_physiology
@@ -267,4 +268,5 @@ def generate_scenario_234(
                     fold_idx=fold_idx,
                     reset_time=True,
                     reset_time_amount=physiology["time"].iloc[0],
+                    replace_annotations = replace_annotations_bool
                 )

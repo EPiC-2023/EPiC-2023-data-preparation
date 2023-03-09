@@ -5,7 +5,7 @@ out_data_dir = "./data_notest/"
 
 [settings]
 scenarios_to_generate = [1,2,3,4]
-save_test_annotations = false
+replace_test_annotations = true
 signals_to_include = ["ecg", "bvp", "gsr", "rsp", "skt", "emg_zygo", "emg_coru", "emg_trap"]
 random_seed = 2022
 time_scale = 1000
