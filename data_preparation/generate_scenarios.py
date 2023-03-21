@@ -31,7 +31,7 @@ def _print_info(scenario, times_dict):
     pprint(times_dict)
 
 
-def generate_scenario_1(config_dict, reader, processor, out_data_dir, replace_test_annotations=False):
+def generate_scenario_1(config_dict, reader, processor, out_data_dir, replace_test_annotations=False, separate_test_annotations=False, original_test_annotations_dir=None):
     """Generate scenario 1.
     Args:
         config_dict (dict): dictionary with configuration settings
@@ -89,6 +89,20 @@ def generate_scenario_1(config_dict, reader, processor, out_data_dir, replace_te
             test_annotations, test_physiology = processor.extract_data_for_intervals(
                 video_annotations, video_physiology, time_intervals, "test"
             )
+            if separate_test_annotations:
+                assert original_test_annotations_dir is not None, "Specify target directory for unmodified annotations"
+                out_unmodified_annotations_dir = os.path.join(
+                    original_test_annotations_dir, f"scenario_{scenario}"
+                )
+                processor.save_data(
+                    annotations=test_annotations,
+                    out_annotations_dir=out_unmodified_annotations_dir,
+                    subject_id=subject_id,
+                    video=video,
+                    set_type="test",
+                    reset_time=True,
+                    reset_time_amount=test_physiology["time"].iloc[0]
+                )
             processor.save_data(
                 annotations=test_annotations,
                 out_annotations_dir=out_annotations_dir,
@@ -112,6 +126,8 @@ def generate_scenario_234(
     kfold_random_seed=None,
     save_physiology=True,
     replace_test_annotations=False,
+    separate_test_annotations=False,
+    original_test_annotations_dir=None
 ):
     """Generate scenario 2, 3, or 4.
     Args:
@@ -254,7 +270,23 @@ def generate_scenario_234(
                 )
                 # bool for deciding whether to save annotations - always for train set, for test set only if save_test_annotations is True
                 replace_annotations_bool = set_type=='test' and replace_test_annotations
+                separate_test_annotations_bool = set_type=='test' and separate_test_annotations
                 # save data
+                if separate_test_annotations_bool:
+                    assert original_test_annotations_dir is not None, "Specify target directory for unmodified annotations"
+                    out_unmodified_annotations_dir = os.path.join(
+                        original_test_annotations_dir, f"scenario_{scenario}"
+                    )
+                    processor.save_data(
+                        annotations=annotations,
+                        out_annotations_dir=out_unmodified_annotations_dir,
+                        subject_id=subject_id,
+                        video=video,
+                        set_type=set_type,
+                        fold_idx=fold_idx,
+                        reset_time=True,
+                        reset_time_amount=physiology["time"].iloc[0]
+                    )
                 processor.save_data(
                     annotations=annotations,
                     out_annotations_dir=out_annotations_dir,

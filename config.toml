@@ -1,11 +1,13 @@
 [env_paths]
-source_data_dir = "/home/bartek/data/case_interpolated/"
+source_data_dir = "/home/bperz/data/case_interpolated/"
 out_data_dir = "./data_notest/"
+out_test_annotations_dir = "./data_original_test_annotations/"
 
 
 [settings]
 scenarios_to_generate = [1,2,3,4]
 replace_test_annotations = true
+separate_test_annotations = true
 signals_to_include = ["ecg", "bvp", "gsr", "rsp", "skt", "emg_zygo", "emg_coru", "emg_trap"]
 random_seed = 2022
 time_scale = 1000

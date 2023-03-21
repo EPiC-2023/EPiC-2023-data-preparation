@@ -363,7 +363,7 @@ class CaseDatasetProcessor:
         reset_time_amount=None,
         make_time_index=True,
         replace_values_bool=False, 
-        replacing_value=-1
+        replacing_value=pd.NA
     ):
         """
         Method for saving processed data
